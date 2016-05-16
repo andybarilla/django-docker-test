@@ -1,0 +1,33 @@
+version: '2'
+services:
+  db:
+    restart: always
+    image: mysql:latest
+    env_file:
+      - db.env
+    environment: 
+      - MYSQL_ROOT_PASSWORD=89123908jlkasd871
+  nginx:
+    restart: always
+    image: nginx:latest
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    volumes_from:
+      - web
+    depends_on:
+      - web 
+  web:
+    restart: always
+    build: ./app
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+    env_file:
+       - db.env
+    environment:
+      - ANOTHER_THING=whatever
+  redis:
+    restart: always
+    image: redis:latest
